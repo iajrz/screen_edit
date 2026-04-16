@@ -6,7 +6,7 @@
 // maybe loan some ideas
 // https://patorjk.com/software/taag/#p=display&f=Alphabet&t=Type+Something+&x=none&v=4&h=4&w=80&we=false
 // definitely remember https://www.youtube.com/watch?v=FLlDt_4EGX4
-int main() {
+int main(void) {
     initscr();
     cbreak();
     noecho();
@@ -24,7 +24,7 @@ int main() {
     int row = 0;
     // IDE recommended this was a constexpr;
     // this is annoying as I want to have this be a C project and constexpr is C++.
-    constexpr char curChar[] = {'x', 'v'};
+    const char curChar[] = {'x', 'v'};
     unsigned long curCharIdx = 0;
 
     while (userInput != 'q' && userInput != 'Q') {
@@ -67,7 +67,7 @@ int main() {
                 ;
         }
         int moveResult = move(row, col);
-        // addch(curChar[curCharIdx]);
+         addch(curChar[curCharIdx]);
         refresh();
         werase(diag); // clear only diag
         box(diag, 0, 0); // border
