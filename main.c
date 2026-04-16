@@ -7,14 +7,12 @@
 // https://patorjk.com/software/taag/#p=display&f=Alphabet&t=Type+Something+&x=none&v=4&h=4&w=80&we=false
 // definitely remember https://www.youtube.com/watch?v=FLlDt_4EGX4
 int main() {
-    struct winsize windowSize;
-    if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &windowSize) == ERR) {
-        perror("ioctl died.");
-        return 1;
-    }
     initscr();
     cbreak();
     noecho();
+    int maxY, maxX;
+    getmaxyx(stdscr, maxY, maxX);
+    WINDOW *diag = newwin(5, 30, 0, 0);
     assert(curs_set(0) != ERR);
     keypad(stdscr,TRUE);
 
@@ -35,24 +33,24 @@ int main() {
             case KEY_LEFT:
                 col--;
                 if (col < 0) {
-                    col = windowSize.ws_col - 1;
+                    col = maxX - 1;
                 }
                 break;
             case KEY_RIGHT:
                 col++;
-                if (col > windowSize.ws_col - 1) {
+                if (col > maxX - 1) {
                     col = 0;
                 }
                 break;
             case KEY_UP:
                 row--;
                 if (row < 0) {
-                    row = windowSize.ws_row - 1;
+                    row = maxY - 1;
                 }
                 break;
             case KEY_DOWN:
                 row++;
-                if (row > windowSize.ws_row - 1) {
+                if (row > maxY - 1) {
                     row = 0;
                 }
                 break;
@@ -62,13 +60,20 @@ int main() {
             case KEY_PPAGE:
                 curCharIdx = (curCharIdx + sizeof(curChar) - 1) % sizeof(curChar);
                 break;
+            case KEY_RESIZE:
+                getmaxyx(stdscr, maxY, maxX);
             default:
                 // do naught, for naught is warranted
                 ;
         }
-        assert(move(row, col) == OK);
-        addch(curChar[curCharIdx]);
+        int moveResult = move(row, col);
+        // addch(curChar[curCharIdx]);
         refresh();
+        werase(diag); // clear only diag
+        box(diag, 0, 0); // border
+        mvwprintw(diag, 1, 1, "row=%d col=%d", row, col);
+        mvwprintw(diag, 2, 1, "move=%d", moveResult);
+        wrefresh(diag); // draw on top
     }
     endwin();
     printf("%lu", sizeof(curChar));
