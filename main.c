@@ -18,16 +18,20 @@ int main() {
     assert(curs_set(0) != ERR);
     keypad(stdscr,TRUE);
 
-    int c = 0; // I did not expect KEY_LEFT to be beyond the values for the char type.
-    // these could be unsigned, perhaps even (gasp!) short
+    // I did not expect KEY_LEFT to be beyond the values for the char type. if I were pushing it, short?
+    // I think if I was really pushing it, it'd be uint16_t, which iirc gets fished from stdint.h or something.
+    int userInput = 0;
+    // these could also be uint16_t.
     int col = 0;
     int row = 0;
+    // IDE recommended this was a constexpr;
+    // this is annoying as I want to have this be a C project and constexpr is C++.
     constexpr char curChar[] = {'x', 'v'};
     unsigned long curCharIdx = 0;
 
-    while (c != 'q' && c != 'Q') {
-        c = getch();
-        switch (c) {
+    while (userInput != 'q' && userInput != 'Q') {
+        userInput = getch();
+        switch (userInput) {
             case KEY_LEFT:
                 col--;
                 if (col < 0) {
