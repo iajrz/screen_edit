@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdio.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
@@ -6,9 +7,9 @@
 // https://patorjk.com/software/taag/#p=display&f=Alphabet&t=Type+Something+&x=none&v=4&h=4&w=80&we=false
 // definitely remember https://www.youtube.com/watch?v=FLlDt_4EGX4
 int main() {
-    struct winsize ws;
-    if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &ws) == -1) {
-        perror("ioctl");
+    struct winsize windowSize;
+    if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &windowSize) == ERR) {
+        perror("ioctl died.");
         return 1;
     }
     initscr();
@@ -30,24 +31,24 @@ int main() {
             case KEY_LEFT:
                 col--;
                 if (col < 0) {
-                    col = ws.ws_col - 1;
+                    col = windowSize.ws_col - 1;
                 }
                 break;
             case KEY_RIGHT:
                 col++;
-                if (col > ws.ws_col - 1) {
+                if (col > windowSize.ws_col - 1) {
                     col = 0;
                 }
                 break;
             case KEY_UP:
                 row--;
                 if (row < 0) {
-                    row = ws.ws_row - 1;
+                    row = windowSize.ws_row - 1;
                 }
                 break;
             case KEY_DOWN:
                 row++;
-                if (row > ws.ws_row - 1) {
+                if (row > windowSize.ws_row - 1) {
                     row = 0;
                 }
                 break;
@@ -61,7 +62,7 @@ int main() {
                 // do naught, for naught is warranted
                 ;
         }
-        move(row, col);
+        assert(move(row, col) == OK);
         addch(curChar[curCharIdx]);
         refresh();
     }
