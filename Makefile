@@ -1,4 +1,4 @@
-CFLAGS = -Wall
+CFLAGS = -Wall -g
 LIBS = -lncurses
 TARGET = screenedit
 all: $(TARGET)
