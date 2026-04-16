@@ -15,14 +15,14 @@ int main() {
     initscr();
     cbreak();
     noecho();
-    curs_set(0);
+    assert(curs_set(0) != ERR);
     keypad(stdscr,TRUE);
 
     int c = 0; // I did not expect KEY_LEFT to be beyond the values for the char type.
     // these could be unsigned, perhaps even (gasp!) short
     int col = 0;
     int row = 0;
-    constexpr char curChar[] = {'x','v'};
+    constexpr char curChar[] = {'x', 'v'};
     unsigned long curCharIdx = 0;
 
     while (c != 'q' && c != 'Q') {
@@ -67,6 +67,6 @@ int main() {
         refresh();
     }
     endwin();
-    printf("%lu",sizeof(curChar));
+    printf("%lu", sizeof(curChar));
     return 0;
 }
